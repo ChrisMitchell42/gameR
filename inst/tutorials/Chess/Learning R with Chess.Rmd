@@ -1,8 +1,9 @@
 ---
 title: "Learning R with Chess"
-output: learnr::tutorial
+output:
+  learnr::tutorial:
+    progressive: true
 runtime: shiny_prerendered
-progressive: TRUE
 ---
 
 ```{r setup, include=FALSE}
