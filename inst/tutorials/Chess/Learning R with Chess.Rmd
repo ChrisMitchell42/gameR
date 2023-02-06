@@ -8,27 +8,171 @@ runtime: shiny_prerendered
 
 ```{r setup, include=FALSE}
 library(learnr)
-knitr::opts_chunk$set(echo = TRUE)
+library(chess)
+library(rchess)
+library(tidyverse)
+library(gridExtra)
+
+knitr::opts_chunk$set(echo = TRUE, comment = "")
+fen_to_matrix <- function(fen) {
+  pieces <- strsplit(fen, ' ')[[1]][1]
+  rows   <- strsplit(pieces, "/")[[1]]
+  for (i in 1:8) {
+    rows <- gsub(i, paste(rep(' ', i), collapse=''), rows)
+  }
+  matrix(unlist(strsplit(rows, '')), 8, 8, byrow = TRUE, list(c(8:1), letters[1:8]))
+}
+
+create_fen_plot <- function(fen, title) {
+  mat <- fen_to_matrix(fen)
+  unicode <- c(
+    ` ` = '',
+    P='\u2659', R='\u2656', N='\u2658', B='\u2657', Q='\u2655', K='\u2654', # White
+    p='\u265F', r='\u265C', n='\u265E', b='\u265D', q='\u265B', k='\u265A'  # Black
+  )
+  board <- expand.grid(x=1:8, y=1:8) %>%
+    mutate(
+      tilecol = (x+y)%%2 == 1,
+      piece  = as.vector(t(mat[8:1,])),
+      colour = piece %in% letters,
+      unicode = unicode[piece]
+    )
+  ggplot(board, aes(x, y)) + 
+    geom_tile(aes(fill = tilecol), colour = 'black', show.legend = FALSE) + 
+    geom_text(aes(label = unicode), family="Arial Unicode MS", size = 8) + 
+    coord_equal() + 
+    theme_void() +
+    scale_fill_manual(values = c('#D2B48C', '#F5F5DC'))  +
+    labs(title = title) +
+    theme(plot.title = element_text(hjust = 0.5))
+}
+
 ```
 
 
 ## Introduction
 
-test
 
 ## Setting Up The Chessboard
 
 ```{r}
 library(rchess)
 
-newgame <- Chess$new()
+game <- Chess$new()
 
-plot(newgame)
+plot(game)
 ```
 
 ## Making A Move
 
 ```{r}
-newgame$moves()
+game$moves()
+
+game$moves()[[10]]
+game$move("e4")
+plot(game)
 ```
 
+
+```{r}
+sample(game$moves(),1)
+
+game$move(sample(game$moves(),1))
+plot(game)
+```
+
+## Searching Through Potential Moves
+
+```{r}
+g2 <- Chess$new()
+g2$move("e4")$move("e5")$
+  move("Nf3")$move("Nc6")$
+  move("Bc4")$move("d5")
+plot(g2)
+```
+
+```{r}
+g2$moves()
+length(g2$moves())
+```
+
+```{r}
+grep("x", g2$moves())
+grep("O-O", g2$moves())
+```
+
+```{r}
+m <- g2$moves()[c(3,8,10,32)]
+m <- g2$moves()[c(grep("x", g2$moves()),grep("O-O", g2$moves()))]
+```
+
+```{r, fig.height=8}
+g3 <- list()
+for(i in 1:length(m)){
+  g2$move(m[i])
+  g3[i] <- g2$fen()
+  g2$undo()
+}
+
+grid.arrange(create_fen_plot(g3[[1]],m[1]),
+             create_fen_plot(g3[[2]],m[2]),
+             create_fen_plot(g3[[3]],m[3]),
+             create_fen_plot(g3[[4]],m[4]),
+             ncol = 2)
+```
+
+## Simulating A Game
+
+```{r}
+game <- Chess$new()
+
+while(game$game_over() == FALSE){
+ game$move(sample(game$moves(), 1)) 
+}
+
+plot(game)
+
+
+```
+
+```{r}
+length(game$history())/2
+```
+
+## Simulating Many Games
+
+```{r}
+game <- Chess$new()
+
+pgns <- list() 
+moves <- list()
+  
+for(i in 1:100){
+  while(game$game_over() == FALSE){
+    game$move(sample(game$moves(), 1)) 
+  }
+  pgns[[i]] <- game$pgn()
+  moves[[i]] <- game$history()
+  game$reset()
+}
+```
+
+```{r}
+x <- unlist(lapply(moves, length))/2
+hist(x)
+```
+
+
+
+
+## Challenges
+
+* Create a function that acts as a chess bot
+  - selects its own moves
+  - allows user input for their moves
+  - can play games against other bots
+* Evaluate a position and add this capability to the bot
+  - get an evaluation (stockfish?)
+  - have the bot use evaluation to select moves
+  - compare bots of different ability
+  - set up tournament of bots
