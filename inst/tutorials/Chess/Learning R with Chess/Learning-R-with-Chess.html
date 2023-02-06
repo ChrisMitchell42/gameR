@@ -14,7 +14,7 @@
 <meta name="allow-skip" content="false" />
 <meta name="learnr-version-prerender" content="0.11.2" />
 
-<title>Tutorial</title>
+<title>Learning R with Chess</title>
 
 <!-- header-includes START -->
 <!-- HEAD_CONTENT -->
@@ -111,15 +111,27 @@ if (window.hljs) {
 
 <div id="section-introduction" class="section level2">
 <h2>Introduction</h2>
+<p>test</p>
 </div>
 <div id="section-setting-up-the-chessboard" class="section level2">
 <h2>Setting Up The Chessboard</h2>
-<div id="htmlwidget-8699a5ecd0e0303a5024" style="width:300px;height:300px;" class="chessboardjs html-widget "></div>
-<script type="application/json" data-for="htmlwidget-8699a5ecd0e0303a5024">{"x":{"fen":"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code>library(rchess)
+
+newgame &lt;- Chess$new()
+
+plot(newgame)</code></pre>
+<div id="htmlwidget-37b669f3e478a2295732" style="width:300px;height:300px;" class="chessboardjs html-widget "></div>
+<script type="application/json" data-for="htmlwidget-37b669f3e478a2295732">{"x":{"fen":"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"},"evals":[],"jsHooks":[]}</script>
+</div>
+<div id="section-making-a-move" class="section level2">
+<h2>Making A Move</h2>
+<pre class="r"><code>newgame$moves()</code></pre>
+<pre><code>##  [1] &quot;a3&quot;  &quot;a4&quot;  &quot;b3&quot;  &quot;b4&quot;  &quot;c3&quot;  &quot;c4&quot;  &quot;d3&quot;  &quot;d4&quot;  &quot;e3&quot;  &quot;e4&quot;  &quot;f3&quot;  &quot;f4&quot; 
+## [13] &quot;g3&quot;  &quot;g4&quot;  &quot;h3&quot;  &quot;h4&quot;  &quot;Na3&quot; &quot;Nc3&quot; &quot;Nf3&quot; &quot;Nh3&quot;</code></pre>
 <p>
 <script type="application/shiny-prerendered" data-context="server-start">
 library(learnr)
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = TRUE)
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
@@ -163,7 +175,8 @@ session$onSessionEnded(function() {
 
 <!-- begin doc-metadata -->
 <div id="doc-metadata">
-<h1 class="title toc-ignore" style="display:none;">Tutorial</h1>
+<h1 class="title toc-ignore" style="display:none;">Learning R with
+Chess</h1>
 </div>
 <!-- end doc-metadata -->
 

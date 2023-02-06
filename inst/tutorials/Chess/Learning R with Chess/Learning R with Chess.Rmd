@@ -1,7 +1,8 @@
 ---
-title: "Tutorial"
+title: "Learning R with Chess"
 output: learnr::tutorial
 runtime: shiny_prerendered
+progressive: TRUE
 ---
 
 ```{r setup, include=FALSE}
@@ -11,6 +12,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ## Introduction
+
+test
 
 ## Setting Up The Chessboard
 
