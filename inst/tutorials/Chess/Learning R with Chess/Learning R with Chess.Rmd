@@ -1,0 +1,30 @@
+---
+title: "Tutorial"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Introduction
+
+## Setting Up The Chessboard
+
+```{r}
+library(rchess)
+
+newgame <- Chess$new()
+
+plot(newgame)
+```
+
+## Making A Move
+
+```{r}
+newgame$moves()
+```
+
