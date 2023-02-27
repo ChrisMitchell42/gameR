@@ -47,39 +47,104 @@ create_fen_plot <- function(fen, title) {
     theme(plot.title = element_text(hjust = 0.5))
 }
 
+game <- Chess$new()
+game$move("e4")
 ```
 
 
 ## Introduction
 
+Chess is a game that dates back centuries and has captivated people from all walks of life for a long time. It isn't necessary to know the history of the game but if you're interested, here's a quick 5 minute primer.
+
+![](https://www.youtube.com/watch?v=YeB-1F-UKO0)
+
+One reason people become fascinated with chess is that it is an __unsolved__ game. This means there is no perfect way to play.
+
+The game is a mixture of creativity and ruthless logic. It was once thought that the only minds capable of such flexibility would have to be humans. However, in 1997, an IBM machine named _Deep Blue_ defeated Garry Kasparov 3<sup>1</sup>&frasl;<sub>2</sub> - 2<sup>1</sup>&frasl;<sub>2</sub>. This marked the first time a computer had beaten the reigning world champion. Kasparov is still considered (arguably) the greatest chess player ever so this was a turning point for machine intelligence.
+
+So how did _Deep Blue_ do it? That's the subject of this tutorial. Along the way, you'll learn how to do a lot of things in R, including:
+
+* How to interact with objects and environments in R
+* How to use lists in R
+* How to search through lists
+* How to select from a list
+* How to use simple conditional statements (eg. _while()_)
 
 ## Setting Up The Chessboard
 
-```{r}
+Chess is played on an 8x8 grid of alternately dark and light coloured squares. It is a two-player game in which each player has 16 pieces at the start. Each player takes their turn, starting with the player who has the white pieces. A turn cannot be skipped or passed. These kinds of simple rules are easy for a computer to understand. In fact, the _rchess_ package has these rules coded so we can load up the package and get started!
+
+```{r, echo=TRUE, eval=FALSE}
+install.packages("rchess")
 library(rchess)
+```
 
+To start a chess game we create a Chess environment like this:
+```{r, fig.align='center'}
 game <- Chess$new()
-
 plot(game)
 ```
 
+You probably recognise this as a standard chessboard. It is interesting to note that there varieties of chess for 4 players, with different piece configurations and moves. None of those are dealt with here but with the skills you'll learn, maybe you can get that going!
+
 ## Making A Move
+
+In Chess, the game always starts with White making a move. An element of the new game we have created in the previous section, called __moves__ simply lists the possible moves in the current game position. We can bring it up like so:
 
 ```{r}
 game$moves()
+```
 
+If we want to find out how many possible moves there are, we can use the __length__ function to find out how many moves are possible. All we need to do is put the list into the length function as follows:
+
+```{r}
+length(game$moves())
+```
+
+So there are 20 possible moves here. That's a lot to choose from. Let's play the most common opening move in chess and move the King's pawn 2 spaces. This is known in chess notation as _e4_, meaning move the _e_ pawn to the _4^th^_ rank. You may be able to see that is listed as the 10^th^ move in the previous list of 20 possible moves.
+
+```{r}
 game$moves()[[10]]
+```
+
+We can make a move using the __move__ function within the chess environment like so:
+
+```{r}
 game$move("e4")
 plot(game)
 ```
 
+Now pull up the list of possible moves for Black!
 
-```{r}
+```{r find_moves1, exercise = TRUE}
+
+```
+
+If we want to create a computer that can play chess as well as a human being, then we need to give it a way to decide between all these moves.
+
+The function __sample__ will allow us to select a move from this list. If we use sample like this, we're just picking a move at random.
+
+```{r, eval=FALSE}
 sample(game$moves(),1)
+```
 
+```{r, echo = F}
+print("a5")
+```
+
+It's now a simple matter of putting all that code to sample the list of moves into the __move__ function just like before.
+
+```{r, eval = F}
 game$move(sample(game$moves(),1))
 plot(game)
 ```
+
+```{r, echo = F}
+game$move("f6")
+plot(game)
+```
+
+This time the computer has not played _a5_ because remember, it has _randomly_ selected a move from a list of 20.
 
 ## Searching Through Potential Moves
 
@@ -147,7 +212,7 @@ game <- Chess$new()
 pgns <- list() 
 moves <- list()
   
-for(i in 1:100){
+for(i in 1:2){
   while(game$game_over() == FALSE){
     game$move(sample(game$moves(), 1)) 
   }
